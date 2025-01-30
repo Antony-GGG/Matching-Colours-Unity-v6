@@ -235,14 +235,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 390789591267144494, guid: 5819fa93e33742d498ffede6ddb8f524, type: 3}
-      propertyPath: playOnAwake
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 456356162480490707, guid: 5819fa93e33742d498ffede6ddb8f524, type: 3}
-      propertyPath: playOnAwake
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 1149676594378604996, guid: 5819fa93e33742d498ffede6ddb8f524, type: 3}
       propertyPath: BottomPoint
       value: 
@@ -267,10 +259,6 @@ PrefabInstance:
       propertyPath: pouringSound
       value: 
       objectReference: {fileID: 2110733184}
-    - target: {fileID: 1149676594378604996, guid: 5819fa93e33742d498ffede6ddb8f524, type: 3}
-      propertyPath: timeToRotate
-      value: 0.8
-      objectReference: {fileID: 0}
     - target: {fileID: 1149676594378604996, guid: 5819fa93e33742d498ffede6ddb8f524, type: 3}
       propertyPath: leftRotationPoint
       value: 
@@ -330,10 +318,6 @@ PrefabInstance:
     - target: {fileID: 1149676594378604996, guid: 5819fa93e33742d498ffede6ddb8f524, type: 3}
       propertyPath: bottleColors.Array.data[3].r
       value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7051019495546421027, guid: 5819fa93e33742d498ffede6ddb8f524, type: 3}
-      propertyPath: playOnAwake
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8896680930901726521, guid: 5819fa93e33742d498ffede6ddb8f524, type: 3}
       propertyPath: m_Name
@@ -828,7 +812,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!82 &1054076263
 AudioSource:
   m_ObjectHideFlags: 0
@@ -935,7 +919,7 @@ Transform:
   m_GameObject: {fileID: 1054076261}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.016901316, y: 0.34044224, z: -0.05940088}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1422,7 +1406,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &2110733183
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1542,7 +1526,7 @@ Transform:
   m_GameObject: {fileID: 2110733182}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.016901316, y: 0.34044224, z: -0.05940088}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1579,6 +1563,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   userData: {fileID: 11400000, guid: 9e4053483d8ef89409fe058bf951956d, type: 2}
+  iv: 0
+  coins: 0
+  scorebase: 0
+  levelbase: 0
+  user_id: 0
 --- !u!114 &2112196272
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1619,6 +1608,14 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 1371784321}
+    - target: {fileID: 2024485415952654542, guid: acf7981560f2dfe4a9c50a6f391e4481, type: 3}
+      propertyPath: m_SortingOrder
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 2024485420818280724, guid: acf7981560f2dfe4a9c50a6f391e4481, type: 3}
+      propertyPath: m_SortingOrder
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 2432079206860273260, guid: acf7981560f2dfe4a9c50a6f391e4481, type: 3}
       propertyPath: m_Camera
       value: 

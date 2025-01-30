@@ -50,8 +50,8 @@ public class BottleController : MonoBehaviour
 
     GameController myObj1 = new GameController();
 
-    public AudioSource pouringSound;
-    public AudioSource filledSound;
+    //public AudioSource pouringSound;
+    //public AudioSource filledSound;
 
     private GameObject[] levelbottles;
     private GameObject levelbottle;
@@ -259,10 +259,11 @@ public class BottleController : MonoBehaviour
 
         lineRenderer.enabled = false;
 
-        if(pouringSound != null)
-        { 
+        /*if (pouringSound != null)
+        {
             pouringSound.Stop();
-        }
+        }*/
+        FindFirstObjectByType<AudioManager>().Stop("PouringSound");
 
 
         StartCoroutine(RotateBottleBack());
@@ -413,20 +414,26 @@ public class BottleController : MonoBehaviour
     IEnumerator LockBottle() // lock bottle when it is full  
     {
 
-        if (bottleControllerRef.numberOfTopColorLayer == 4
-        && bottleControllerRef.numberOfColorsInBottle == 4)
+        if (bottleControllerRef.numberOfTopColorLayer == 4 && bottleControllerRef.numberOfColorsInBottle == 4)
         {
             bottleControllerRef.confetti.Play();
-            bottleControllerRef.filledSound.Play();
+            //bottleControllerRef.filledSound.Play();
+            FindFirstObjectByType<AudioManager>().Play("FilledSound");
+            bottleControllerRef.GetComponent<Collider2D>().enabled = false;
+            bottleControllerRef.tag = "Locked Bottle";
             yield return StartCoroutine(CapPositionLerp());
         }
 
-        if (bottleControllerRef.numberOfTopColorLayer == 4
-        && bottleControllerRef.numberOfColorsInBottle == 4)
+        /*if (bottleControllerRef.numberOfTopColorLayer == 4 && bottleControllerRef.numberOfColorsInBottle == 4)
         {
             bottleControllerRef.GetComponent<Collider2D>().enabled = false;
             bottleControllerRef.tag = "Locked Bottle";
-        }
+        }*/
+    }
+
+    private IEnumerator CapPositionLerp(AudioSource filledSound)
+    {
+        throw new NotImplementedException();
     }
 
     IEnumerator CapPositionLerp()
@@ -452,7 +459,8 @@ public class BottleController : MonoBehaviour
 
     private void PlayBoilingSound() // boilin sound
     {
-        pouringSound.Play();
+        //pouringSound.Play();
+        FindFirstObjectByType<AudioManager>().Play("PouringSound");
     }
 
     private void LockAll() // Cant move more than one bottle in the same time

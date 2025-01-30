@@ -1,8 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 using TMPro;
 using TMPro.Examples;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -26,6 +28,13 @@ public class APIManager : MonoBehaviour
     #endregion
 
     [SerializeField] UserDataObject userData;
+
+    public int iv;
+    public int coins;
+    public int scorebase;
+    public int levelbase;
+
+    public int user_id;
 
     //private string base_url = "https://vnwp9menq5.execute-api.us-east-1.amazonaws.com/Prod/games/updateGameScore";
     private string base_url = "https://vxwuq445k5.execute-api.ap-south-1.amazonaws.com/dev/games/updateGameScore";
@@ -110,7 +119,80 @@ public class APIManager : MonoBehaviour
     {
         return JsonUtility.FromJson<APIResponse<T>>(json);
     }
+
+    public void DecyrptToken(string token)
+    {
+        // token will be received from index page to unity
+        try
+        {
+            string payload = token.Split('.')[1];
+            payload = payload.Replace('-', '+').Replace('_', '/');
+
+            // Fix padding
+            int padding = 4 - (payload.Length % 4);
+            if (padding < 4)
+            {
+                payload = payload.PadRight(payload.Length + padding, '=');
+            }
+            byte[] bytes = Convert.FromBase64String(payload);
+            string plainjson = Encoding.UTF8.GetString(bytes);
+            Debug.Log("TOKEN DATA" + plainjson);
+            TokenRoot var1 = JsonUtility.FromJson<TokenRoot>(plainjson);
+
+            iv = int.Parse(var1.data.score_setting.ivalue.ToString());
+            scorebase = int.Parse(var1.data.score_setting.scorebase.ToString());
+            levelbase = int.Parse(var1.data.score_setting.levelbase.ToString());
+            coins = int.Parse(var1.data.score_setting.coins.ToString());
+            user_id = var1.data.user_id;
+
+        }
+        catch (Exception ex)
+        {
+            Debug.LogException(ex);
+        }
+    }
+
+    public void coinsEarningLevelBased(double userlevel)
+    {
+        // token will be received from index page to unity
+        // karle bsdk merese math puch
+        try
+        {
+            int coinsearned = 0;  // variable to store coins earned 
+
+            if (coins > 0)  //  if any coins to be given
+            {
+                if (levelbase > 0)
+                {
+
+                    if ((userlevel % levelbase) == 0)
+                    {
+                        coinsearned = (int)((userlevel / levelbase) * coins);
+                        if (coinsearned > 0)
+                        {
+                            // display coins on game UI using below variables 
+                            // Response.Write("Coins earned " + coins);
+                            //Response.Write("Total coins " + coinsearned);
+                        }
+                    }
+
+                }
+                else
+                {
+                    // coins earning is not level based for this game
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            // exception block
+            //Response.Write(ex.ToString());
+        }
+    }
+
+
 }
+
 
 
 [Serializable]
@@ -132,3 +214,25 @@ public class UpdatePoints
     public int points;
     public int level;
 }
+[System.Serializable]
+public class ScoreSetting
+{
+    public string ivalue;
+    public string coins;
+    public string scorebase;
+    public string levelbase;
+}
+
+[System.Serializable]
+public class Data
+{
+    public int user_id;
+    public ScoreSetting score_setting;
+}
+
+[System.Serializable]
+public class TokenRoot
+{
+    public Data data;
+}
+

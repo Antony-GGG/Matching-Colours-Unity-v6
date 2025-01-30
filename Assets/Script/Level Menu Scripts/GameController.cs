@@ -135,7 +135,7 @@ public class GameController : MonoBehaviour
                     }
                 }
             }
-            else // tab anywhere on the screen to deslecet bottles
+            /*else // tab anywhere on the screen to deselect bottles
             {
                 if (FirstBottle != null)
                 {
@@ -152,7 +152,7 @@ public class GameController : MonoBehaviour
                         SecondBottle = null;
                     }
                 }
-            }
+            }*/
         }
 
         if (allFull == false) // keep checking on bottles
@@ -222,6 +222,8 @@ public class GameController : MonoBehaviour
                 }
             }
 
+            FindFirstObjectByType<AudioManager>().Play("WinSound");
+
             if (levelToUnlock > completedLevel)
             {
                 PlayerPrefs.SetInt("CompletedLevels", completedLevel + 1);
@@ -238,6 +240,8 @@ public class GameController : MonoBehaviour
 
                     PlayerPrefs.SetInt("PlayerScore", playerScore);
 
+                    _APIManager.coinsEarningLevelBased(levelToUnlock);
+
                     _APIManager.UpdateGameScore(score[2], "win", levelToUnlock);
                 }
                 else if (timeUsed <= timeThresholds[1])
@@ -246,6 +250,8 @@ public class GameController : MonoBehaviour
 
                     PlayerPrefs.SetInt("PlayerScore", playerScore);
 
+                    _APIManager.coinsEarningLevelBased(levelToUnlock);
+
                     _APIManager.UpdateGameScore(score[1], "win", levelToUnlock);
                 }
                 else
@@ -253,6 +259,8 @@ public class GameController : MonoBehaviour
                     playerScore += score[0]; // Lowest score for slow completion
 
                     PlayerPrefs.SetInt("PlayerScore", playerScore);
+
+                    _APIManager.coinsEarningLevelBased(levelToUnlock);
 
                     _APIManager.UpdateGameScore(score[0], "win", levelToUnlock);
                 }
