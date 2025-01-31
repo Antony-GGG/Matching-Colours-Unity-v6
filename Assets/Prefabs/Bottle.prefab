@@ -575,7 +575,7 @@ MonoBehaviour:
   leftRotationPoint: {fileID: 2490054884069009804}
   rightRotationPoint: {fileID: 2261781307952761076}
   lineRenderer: {fileID: 0}
-  timeToRotate: 1
+  timeToRotate: 0.75
 --- !u!61 &8257917902198770636
 BoxCollider2D:
   m_ObjectHideFlags: 0

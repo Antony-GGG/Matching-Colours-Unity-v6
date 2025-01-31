@@ -6,6 +6,7 @@ TagManager:
   tags:
   - bottle
   - Locked Bottle
+  - GGCoinText
   layers:
   - Default
   - TransparentFX

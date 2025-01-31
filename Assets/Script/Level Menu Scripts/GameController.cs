@@ -222,6 +222,15 @@ public class GameController : MonoBehaviour
                 }
             }
 
+            if(levelToUnlock == 10)
+            {
+                SceneManager.LoadScene(12); //game completed screen
+            }
+            else if (!LevelCompletedCanvas.activeInHierarchy)
+            {
+                LevelCompletedCanvas.SetActive(true);
+            }
+
             FindFirstObjectByType<AudioManager>().Play("WinSound");
 
             if (levelToUnlock > completedLevel)
@@ -266,14 +275,6 @@ public class GameController : MonoBehaviour
                 }
             }
 
-            if(levelToUnlock == 10)
-            {
-                SceneManager.LoadScene(12); //game completed screen
-            }
-            else if (!LevelCompletedCanvas.activeInHierarchy)
-            {
-                LevelCompletedCanvas.SetActive(true);
-            }
         }
     }
 }

@@ -1,3 +1,4 @@
+using GameAnalyticsSDK;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -29,15 +30,22 @@ public class APIManager : MonoBehaviour
 
     [SerializeField] UserDataObject userData;
 
-    public int iv;
-    public int coins;
-    public int scorebase;
-    public int levelbase;
+    private int iv;
+    private int coins;
+    private int scorebase;
+    private int levelbase;
 
-    public int user_id;
+    private int user_id;
 
     //private string base_url = "https://vnwp9menq5.execute-api.us-east-1.amazonaws.com/Prod/games/updateGameScore";
     private string base_url = "https://vxwuq445k5.execute-api.ap-south-1.amazonaws.com/dev/games/updateGameScore";
+
+    private void Start()
+    {
+        DecyrptToken(userData.Data.token);
+        GameAnalytics.SetCustomId(user_id.ToString());
+        GameAnalytics.Initialize();
+    }
 
     public void UpdateGameScore(int score, string winOrLoss, int level)
     {
@@ -122,13 +130,13 @@ public class APIManager : MonoBehaviour
 
     public void DecyrptToken(string token)
     {
-        // token will be received from index page to unity
+        //token will be received from index page to unity
         try
         {
             string payload = token.Split('.')[1];
             payload = payload.Replace('-', '+').Replace('_', '/');
 
-            // Fix padding
+            //Fix padding
             int padding = 4 - (payload.Length % 4);
             if (padding < 4)
             {
@@ -154,13 +162,23 @@ public class APIManager : MonoBehaviour
 
     public void coinsEarningLevelBased(double userlevel)
     {
-        // token will be received from index page to unity
-        // karle bsdk merese math puch
+        //token will be received from index page to unity
         try
         {
-            int coinsearned = 0;  // variable to store coins earned 
+            /*TextMeshProUGUI _GGCoinText = GameObject.FindGameObjectWithTag("GGCoinText").GetComponent<TextMeshProUGUI>();
+            if (_GGCoinText != null)
+            {
+                _GGCoinText.text = "You've earned 1 GG Coin";
+                Debug.Log("Worked");
+            }
+            else
+            {
+                Debug.Log("Fucked");
+            }*/
+                
+            int coinsearned = 0;  //variable to store coins earned 
 
-            if (coins > 0)  //  if any coins to be given
+            if (coins > 0)  //if any coins to be given
             {
                 if (levelbase > 0)
                 {
@@ -170,8 +188,13 @@ public class APIManager : MonoBehaviour
                         coinsearned = (int)((userlevel / levelbase) * coins);
                         if (coinsearned > 0)
                         {
-                            // display coins on game UI using below variables 
-                            // Response.Write("Coins earned " + coins);
+                            //display coins on game UI using below variables
+
+                            TextMeshProUGUI _GGCoinText = GameObject.FindGameObjectWithTag("GGCoinText").GetComponent<TextMeshProUGUI>();
+
+                            _GGCoinText.text = "You've earned " + coinsearned.ToString() + " GG Coin";
+
+                            //Response.Write("Coins earned " + coins);
                             //Response.Write("Total coins " + coinsearned);
                         }
                     }
@@ -179,13 +202,14 @@ public class APIManager : MonoBehaviour
                 }
                 else
                 {
-                    // coins earning is not level based for this game
+                    //coins earning is not level based for this game
                 }
             }
         }
         catch (Exception ex)
         {
-            // exception block
+            Debug.Log("Hello " + ex);
+            //exception block
             //Response.Write(ex.ToString());
         }
     }
@@ -214,6 +238,7 @@ public class UpdatePoints
     public int points;
     public int level;
 }
+
 [System.Serializable]
 public class ScoreSetting
 {
