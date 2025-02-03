@@ -3,6 +3,7 @@ using UnityEngine;
 using System.Linq;
 using TMPro;
 using UnityEngine.SceneManagement;
+using GameAnalyticsSDK;
 
 public class GameController : MonoBehaviour
 {
@@ -14,9 +15,8 @@ public class GameController : MonoBehaviour
 
     private bool allFull = false; // all bottles are full
 
-    public int levelToUnlock;
+    public int currentLevel;
     int numberOfUnlockedLevel;
-
     [Range(0, 10)] int completedLevel;
 
     public GameObject LevelCompletedCanvas;
@@ -37,7 +37,6 @@ public class GameController : MonoBehaviour
 
     void Start()
     {
-
         if (!PlayerPrefs.HasKey("PlayerScore"))
         {
             PlayerPrefs.SetInt("PlayerScore", 00);
@@ -48,12 +47,15 @@ public class GameController : MonoBehaviour
             PlayerPrefs.SetInt("CompletedLevels", 0);
         }
 
+        scoreText.text = "Score : " + PlayerPrefs.GetInt("PlayerScore").ToString();
+
         playerScore = PlayerPrefs.GetInt("PlayerScore");
 
         timerIsRunning = true;
 
-        scoreText.text = "Score : " + PlayerPrefs.GetInt("PlayerScore").ToString();
+        GameAnalytics.NewProgressionEvent(GAProgressionStatus.Start, "Level_" + currentLevel.ToString());
 
+        _APIManager.StartGame();
     }
 
     void Update()
@@ -89,9 +91,7 @@ public class GameController : MonoBehaviour
 
                         if (FirstBottle.numberOfColorsInBottle != 0)
                         {
-                            FirstBottle.transform.position = new Vector3(FirstBottle.transform.position.x,
-                                                                         FirstBottle.transform.position.y + bottleUp,
-                                                                         FirstBottle.transform.position.z);
+                            FirstBottle.transform.position = new Vector3(FirstBottle.transform.position.x, FirstBottle.transform.position.y + bottleUp, FirstBottle.transform.position.z);
                         }
                     }
                     else
@@ -100,9 +100,7 @@ public class GameController : MonoBehaviour
                         {
                             if (FirstBottle.numberOfColorsInBottle != 0)
                             {
-                                FirstBottle.transform.position = new Vector3(FirstBottle.transform.position.x,
-                                                 FirstBottle.transform.position.y + bottleDown,
-                                                 FirstBottle.transform.position.z);
+                                FirstBottle.transform.position = new Vector3(FirstBottle.transform.position.x, FirstBottle.transform.position.y + bottleDown, FirstBottle.transform.position.z);
                             }
                             FirstBottle = null;
                         }
@@ -124,9 +122,7 @@ public class GameController : MonoBehaviour
                             {
                                 if (FirstBottle.numberOfColorsInBottle != 0)
                                 {
-                                    FirstBottle.transform.position = new Vector3(FirstBottle.transform.position.x,
-                                                                                 FirstBottle.transform.position.y + bottleDown,
-                                                                                 FirstBottle.transform.position.z);
+                                    FirstBottle.transform.position = new Vector3(FirstBottle.transform.position.x, FirstBottle.transform.position.y + bottleDown, FirstBottle.transform.position.z);
                                 }
                                 FirstBottle = null;
                                 SecondBottle = null;
@@ -193,15 +189,17 @@ public class GameController : MonoBehaviour
             {
                 GameOverCanvas.SetActive(true);
 
-                _APIManager.UpdateGameScore(0, "loss", levelToUnlock);
+                _APIManager.UpdateGameScore(0, "loss", currentLevel);
 
+                GameAnalytics.NewProgressionEvent(GAProgressionStatus.Fail, "Level_" + currentLevel.ToString(), "Score_", 0);
+                GameAnalytics.NewProgressionEvent(GAProgressionStatus.Fail, "Level_" + currentLevel.ToString(), "Time_", (int)timeElapsed);
             }
         }
     }
 
     public void RestartLevel()
     {
-        SceneManager.LoadScene(levelToUnlock + 1);
+        SceneManager.LoadScene(currentLevel + 1);
     }
 
     private void Win()
@@ -214,15 +212,23 @@ public class GameController : MonoBehaviour
             numberOfUnlockedLevel = PlayerPrefs.GetInt("LevelIsUnlocked");
             completedLevel = PlayerPrefs.GetInt("CompletedLevels");
 
-            if (numberOfUnlockedLevel <= levelToUnlock)
+            Debug.Log("Number of unlocked level : " + PlayerPrefs.GetInt("LevelIsUnlocked") + " (Before update)");
+            Debug.Log("Number of completed level : " + PlayerPrefs.GetInt("CompletedLevels") + " (Before update)");
+            Debug.Log("Current level : " + currentLevel);
+
+            if ((numberOfUnlockedLevel + 1) <= 10)
             {
-                if ((numberOfUnlockedLevel + 1) <= 10)
-                {
-                    PlayerPrefs.SetInt("LevelIsUnlocked", numberOfUnlockedLevel + 1);
-                }
+                PlayerPrefs.SetInt("LevelIsUnlocked", numberOfUnlockedLevel + 1);
+                Debug.Log("Number of unlocked level : " + PlayerPrefs.GetInt("LevelIsUnlocked") + " (After update)");
             }
 
-            if(levelToUnlock == 10)
+            if (currentLevel >= completedLevel + 1)
+            {
+                PlayerPrefs.SetInt("CompletedLevels", completedLevel + 1);
+                Debug.Log("Number of completed level : " + PlayerPrefs.GetInt("CompletedLevels") + " (After update)");
+            }
+
+            if (currentLevel == 10)
             {
                 SceneManager.LoadScene(12); //game completed screen
             }
@@ -233,13 +239,11 @@ public class GameController : MonoBehaviour
 
             FindFirstObjectByType<AudioManager>().Play("WinSound");
 
-            if (levelToUnlock > completedLevel)
+            if (completedLevel < 10)
             {
-                PlayerPrefs.SetInt("CompletedLevels", completedLevel + 1);
 
-                if (levelToUnlock % GrandAdManager.instance.adsAfter == 0)
+                if (currentLevel % GrandAdManager.instance.adsAfter == 0)
                 {
-                    Debug.Log(levelToUnlock);
                     GrandAdManager.instance.ShowAd("startAd");
                 }
 
@@ -249,9 +253,15 @@ public class GameController : MonoBehaviour
 
                     PlayerPrefs.SetInt("PlayerScore", playerScore);
 
-                    _APIManager.coinsEarningLevelBased(levelToUnlock);
+                    scoreText.text = "Score : " + PlayerPrefs.GetInt("PlayerScore").ToString();
 
-                    _APIManager.UpdateGameScore(score[2], "win", levelToUnlock);
+                    _APIManager.coinsEarningLevelBased(currentLevel);
+
+                    _APIManager.UpdateGameScore(score[2], "win", currentLevel);
+
+                    GameAnalytics.NewProgressionEvent(GAProgressionStatus.Complete, "Level_" + currentLevel.ToString(), "Score", score[2]);
+                    GameAnalytics.NewProgressionEvent(GAProgressionStatus.Complete, "Level_" + currentLevel.ToString(), "Time", (int)timeElapsed);
+
                 }
                 else if (timeUsed <= timeThresholds[1])
                 {
@@ -259,9 +269,14 @@ public class GameController : MonoBehaviour
 
                     PlayerPrefs.SetInt("PlayerScore", playerScore);
 
-                    _APIManager.coinsEarningLevelBased(levelToUnlock);
+                    scoreText.text = "Score : " + PlayerPrefs.GetInt("PlayerScore").ToString();
 
-                    _APIManager.UpdateGameScore(score[1], "win", levelToUnlock);
+                    _APIManager.coinsEarningLevelBased(currentLevel);
+
+                    _APIManager.UpdateGameScore(score[1], "win", currentLevel);
+
+                    GameAnalytics.NewProgressionEvent(GAProgressionStatus.Complete, "Level_" + currentLevel.ToString(), "Score", score[1]);
+                    GameAnalytics.NewProgressionEvent(GAProgressionStatus.Complete, "Level_" + currentLevel.ToString(), "Time", (int)timeElapsed);
                 }
                 else
                 {
@@ -269,12 +284,16 @@ public class GameController : MonoBehaviour
 
                     PlayerPrefs.SetInt("PlayerScore", playerScore);
 
-                    _APIManager.coinsEarningLevelBased(levelToUnlock);
+                    scoreText.text = "Score : " + PlayerPrefs.GetInt("PlayerScore").ToString();
 
-                    _APIManager.UpdateGameScore(score[0], "win", levelToUnlock);
+                    _APIManager.coinsEarningLevelBased(currentLevel);
+
+                    _APIManager.UpdateGameScore(score[0], "win", currentLevel);
+
+                    GameAnalytics.NewProgressionEvent(GAProgressionStatus.Complete, "Level_" + currentLevel.ToString(), "Score", score[0]);
+                    GameAnalytics.NewProgressionEvent(GAProgressionStatus.Complete, "Level_" + currentLevel.ToString(), "Time", (int)timeElapsed);
                 }
             }
-
         }
     }
 }

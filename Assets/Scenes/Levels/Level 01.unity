@@ -1111,7 +1111,7 @@ MonoBehaviour:
   - {fileID: 185109246}
   - {fileID: 1748263897}
   - {fileID: 904927726}
-  levelToUnlock: 1
+  currentLevel: 1
   LevelCompletedCanvas: {fileID: 665080641}
   GameOverCanvas: {fileID: 4401235918657411797}
   timerText: {fileID: 1888048525}
@@ -1563,11 +1563,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   userData: {fileID: 11400000, guid: 9e4053483d8ef89409fe058bf951956d, type: 2}
-  iv: 0
-  coins: 0
-  scorebase: 0
-  levelbase: 0
-  user_id: 0
 --- !u!114 &2112196272
 MonoBehaviour:
   m_ObjectHideFlags: 0

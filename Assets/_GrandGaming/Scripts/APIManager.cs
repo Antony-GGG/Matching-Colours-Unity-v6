@@ -1,14 +1,11 @@
-using GameAnalyticsSDK;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
-using TMPro;
-using TMPro.Examples;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Networking;
-
+using TMPro;
+using GameAnalyticsSDK;
 
 public class APIManager : MonoBehaviour
 {
@@ -37,8 +34,10 @@ public class APIManager : MonoBehaviour
 
     private int user_id;
 
-    //private string base_url = "https://vnwp9menq5.execute-api.us-east-1.amazonaws.com/Prod/games/updateGameScore";
-    private string base_url = "https://vxwuq445k5.execute-api.ap-south-1.amazonaws.com/dev/games/updateGameScore";
+    private string roomCode;
+
+    private string base_url = "https://vnwp9menq5.execute-api.us-east-1.amazonaws.com/Prod/games";
+    //private string base_url = "https://vxwuq445k5.execute-api.ap-south-1.amazonaws.com/dev/games";
 
     private void Start()
     {
@@ -56,21 +55,24 @@ public class APIManager : MonoBehaviour
         form.bot_player = "No";
         form.points = score;
         form.level = level;
+        form.room_code = roomCode;
+        form.coins = coins;
         print("updating score in api");
         print("Game ID : " + userData.Data.game_id);
 
-        CallPostAPI<UpdatePoints>("update_points", null, form);
+        CallPostAPI<UpdatePoints>("/updateGameScore", null, form);
     }
 
     #region Get API
     public void CallGetAPI(string endPoint, Action<string> callback)
     {
-        StartCoroutine(IECallGetAPI(base_url, callback));
+        StartCoroutine(IECallGetAPI(base_url+ endPoint, callback));
     }
 
     IEnumerator IECallGetAPI(string uri, Action<string> callback)
     {
         UnityWebRequest getRequest = UnityWebRequest.Get(uri);
+        getRequest.SetRequestHeader("token", userData.Data.token);
         yield return getRequest.SendWebRequest();
 
         if (getRequest.result == UnityWebRequest.Result.ConnectionError || getRequest.result == UnityWebRequest.Result.ProtocolError)
@@ -90,7 +92,7 @@ public class APIManager : MonoBehaviour
     public void CallPostAPI<T>(string endPoint, Action<string> callback, T form)
     {
         Debug.Log("Calling Post API : " + userData.Data.token);
-        StartCoroutine(IECallPostAPI<T>(base_url, callback, form));
+        StartCoroutine(IECallPostAPI<T>(base_url+endPoint, callback, form));
     }
 
     IEnumerator IECallPostAPI<T>(string uri, Action<string> callback, T form)
@@ -122,10 +124,32 @@ public class APIManager : MonoBehaviour
 
     #endregion
 
-    public
-    APIResponse<T> SerializeJson<T>(string json)
+    public APIResponse<T> SerializeJson<T>(string json)
     {
         return JsonUtility.FromJson<APIResponse<T>>(json);
+    }
+    public void StartGame()
+    {
+        CallGetAPI("/startgame", (val) =>
+        {
+            if (val == null)
+                return;
+
+            if (!string.IsNullOrEmpty(SerializeGetJson<string>(val).message))
+            {
+                roomCode = SerializeGetJson<string>(val).message;
+                Debug.Log("RoomCode" + roomCode);
+            }
+            else
+            {
+                Debug.LogWarning("RoomCode not found");
+            }
+        });
+    }
+
+    public GetResponse<T> SerializeGetJson<T>(string json)
+    {
+        return JsonUtility.FromJson<GetResponse<T>>(json);
     }
 
     public void DecyrptToken(string token)
@@ -152,7 +176,6 @@ public class APIManager : MonoBehaviour
             levelbase = int.Parse(var1.data.score_setting.levelbase.ToString());
             coins = int.Parse(var1.data.score_setting.coins.ToString());
             user_id = var1.data.user_id;
-
         }
         catch (Exception ex)
         {
@@ -185,18 +208,19 @@ public class APIManager : MonoBehaviour
 
                     if ((userlevel % levelbase) == 0)
                     {
-                        coinsearned = (int)((userlevel / levelbase) * coins);
-                        if (coinsearned > 0)
+                        TextMeshProUGUI _GGCoinText = GameObject.FindGameObjectWithTag("GGCoinText").GetComponent<TextMeshProUGUI>();
+
+                        _GGCoinText.text = "You've earned " + coins.ToString() + " GG Coin";
+                       
+                        //coinsearned = (int)((userlevel / levelbase) * coins);
+                        /*if (coinsearned > 0)
                         {
                             //display coins on game UI using below variables
 
-                            TextMeshProUGUI _GGCoinText = GameObject.FindGameObjectWithTag("GGCoinText").GetComponent<TextMeshProUGUI>();
-
-                            _GGCoinText.text = "You've earned " + coinsearned.ToString() + " GG Coin";
 
                             //Response.Write("Coins earned " + coins);
                             //Response.Write("Total coins " + coinsearned);
-                        }
+                        }*/
                     }
 
                 }
@@ -213,11 +237,18 @@ public class APIManager : MonoBehaviour
             //Response.Write(ex.ToString());
         }
     }
-
-
 }
 
-
+[Serializable]
+public class GetResponse<T>
+{
+    public bool error;
+    public int code;
+    public string message;
+    public T data;
+    public string state_json;
+    public int points;
+}
 
 [Serializable]
 public struct APIResponse<T>
@@ -237,6 +268,8 @@ public class UpdatePoints
     public string bot_player;
     public int points;
     public int level;
+    public string room_code;
+    public int coins;
 }
 
 [System.Serializable]
@@ -260,4 +293,3 @@ public class TokenRoot
 {
     public Data data;
 }
-

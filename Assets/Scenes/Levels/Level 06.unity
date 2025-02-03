@@ -525,7 +525,7 @@ MonoBehaviour:
   - {fileID: 1117795897}
   - {fileID: 1728850957}
   - {fileID: 1798177847}
-  levelToUnlock: 6
+  currentLevel: 6
   LevelCompletedCanvas: {fileID: 1696153063}
   GameOverCanvas: {fileID: 694164284}
   timerText: {fileID: 1508180085}
