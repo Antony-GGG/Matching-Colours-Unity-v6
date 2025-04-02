@@ -530,7 +530,9 @@ MonoBehaviour:
   GameOverCanvas: {fileID: 694164284}
   timerText: {fileID: 1508180085}
   timeElapsed: 500
+  levelText: {fileID: 1687888272}
   scoreText: {fileID: 1687888271}
+  _GGTextObject: {fileID: 1696153064}
 --- !u!4 &796632131
 Transform:
   m_ObjectHideFlags: 0
@@ -1621,7 +1623,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6016d20babd1f234ba41a9ce46218174, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ggCoins: 0
+  ggScore: 0
   userData: {fileID: 11400000, guid: 9e4053483d8ef89409fe058bf951956d, type: 2}
+  coins: 0
+  levelbase: 0
 --- !u!114 &1618589341
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1778,6 +1784,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1687888272 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3562313380513733809, guid: a2d0c8f5e586e1d4392df41ddd9ce197, type: 3}
+  m_PrefabInstance: {fileID: 1687888270}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1696153062
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1894,6 +1911,11 @@ PrefabInstance:
 --- !u!1 &1696153063 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7222219122004315000, guid: acf7981560f2dfe4a9c50a6f391e4481, type: 3}
+  m_PrefabInstance: {fileID: 1696153062}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1696153064 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1304731650478532594, guid: acf7981560f2dfe4a9c50a6f391e4481, type: 3}
   m_PrefabInstance: {fileID: 1696153062}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1698564121

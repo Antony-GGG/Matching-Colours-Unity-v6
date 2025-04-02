@@ -3,10 +3,10 @@ using UnityEngine;
 
 public class WebGLBridge : BridgeBase
 {
-    /*private void Awake()
+    private void Awake()
     {
         DontDestroyOnLoad(gameObject);
-    }*/
+    }
 
     //public TextMeshProUGUI tokenText;
     public override void GetUserData()

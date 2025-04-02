@@ -1,10 +1,13 @@
 fileFormatVersion: 2
-guid: fee7ccef02de7ee4bb20d682f9cf27e1
+guid: a6f4f4f70df565b48b3613fd50e173b2
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 4728393952403248342
-    second: Group 11_0
+      213: 4031564604880626460
+    second: Group 13_0
+  - first:
+      213: -8464749129216593372
+    second: Group 13_1
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -51,7 +54,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 100
+  spritePixelsToUnits: 256
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -126,13 +129,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Group 11_0
+      name: Group 13_0
       rect:
         serializedVersion: 2
         x: 0
-        y: 879
-        width: 961
-        height: 201
+        y: 42
+        width: 115
+        height: 174
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -141,8 +144,30 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 6d4d9136f31ae9140800000000000000
-      internalID: 4728393952403248342
+      spriteID: c13a2f2e5aef2f730800000000000000
+      internalID: 4031564604880626460
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Group 13_1
+      rect:
+        serializedVersion: 2
+        x: 141
+        y: 85
+        width: 88
+        height: 88
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4227f30e38b278a80800000000000000
+      internalID: -8464749129216593372
       vertices: []
       indices: 
       edges: []
@@ -161,7 +186,8 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Group 11_0: 4728393952403248342
+      Group 13_0: 4031564604880626460
+      Group 13_1: -8464749129216593372
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -314,7 +314,9 @@ MonoBehaviour:
   GameOverCanvas: {fileID: 1062273664}
   timerText: {fileID: 426642125}
   timeElapsed: 500
+  levelText: {fileID: 1349715685}
   scoreText: {fileID: 1262580000}
+  _GGTextObject: {fileID: 660666329}
 --- !u!4 &509170184
 Transform:
   m_ObjectHideFlags: 0
@@ -330,6 +332,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &660666329 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1304731650478532594, guid: acf7981560f2dfe4a9c50a6f391e4481, type: 3}
+  m_PrefabInstance: {fileID: 1284219606}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &665893933
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -981,6 +988,10 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: RestartLevel
       objectReference: {fileID: 0}
+    - target: {fileID: 1304731650478532594, guid: acf7981560f2dfe4a9c50a6f391e4481, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2432079206860273260, guid: acf7981560f2dfe4a9c50a6f391e4481, type: 3}
       propertyPath: m_Camera
       value: 
@@ -1069,15 +1080,22 @@ PrefabInstance:
       propertyPath: m_Name
       value: LevelComplete Canvas
       objectReference: {fileID: 0}
-    - target: {fileID: 7222219122004315000, guid: acf7981560f2dfe4a9c50a6f391e4481, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: acf7981560f2dfe4a9c50a6f391e4481, type: 3}
+--- !u!114 &1349715685 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3562313380513733809, guid: a2d0c8f5e586e1d4392df41ddd9ce197, type: 3}
+  m_PrefabInstance: {fileID: 1262579999}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1422440003
 GameObject:
   m_ObjectHideFlags: 0
@@ -1108,7 +1126,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6016d20babd1f234ba41a9ce46218174, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ggCoins: 0
+  ggScore: 0
   userData: {fileID: 11400000, guid: 9e4053483d8ef89409fe058bf951956d, type: 2}
+  coins: 0
+  levelbase: 0
 --- !u!114 &1422440005
 MonoBehaviour:
   m_ObjectHideFlags: 0

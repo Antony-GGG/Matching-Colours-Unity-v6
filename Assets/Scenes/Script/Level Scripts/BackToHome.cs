@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 public class BackToHome : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI scoreText;
+    [SerializeField] private TextMeshProUGUI ggCoinText;
 
     private void Start()
     {
@@ -16,6 +17,7 @@ public class BackToHome : MonoBehaviour
         }
 
         scoreText.text = "Score : " + PlayerPrefs.GetInt("PlayerScore").ToString();
+        ggCoinText.text = "GG Coins : " + APIManager.Instance.ggCoins.ToString();
     }
 
     public void Back()
@@ -37,6 +39,7 @@ public class BackToHome : MonoBehaviour
     public void Restart()
     {
         PlayerPrefs.DeleteAll();
+        APIManager.Instance.StartGame();
         SceneManager.LoadScene(0);
     }
 

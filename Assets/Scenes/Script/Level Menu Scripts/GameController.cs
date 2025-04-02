@@ -7,8 +7,6 @@ using GameAnalyticsSDK;
 
 public class GameController : MonoBehaviour
 {
-    [SerializeField] APIManager _APIManager;
-
     public BottleController FirstBottle;
     public BottleController SecondBottle;
     public BottleController[] bottles;
@@ -31,7 +29,9 @@ public class GameController : MonoBehaviour
     [SerializeField] float timeElapsed;
     float[] timeThresholds = { 50f, 100f };
 
+    [SerializeField] TextMeshProUGUI levelText;
     [SerializeField] TextMeshProUGUI scoreText;
+    [SerializeField] GameObject _GGTextObject;
     int playerScore;
     int[] score = { 100, 200, 300 };
 
@@ -48,14 +48,13 @@ public class GameController : MonoBehaviour
         }
 
         scoreText.text = "Score : " + PlayerPrefs.GetInt("PlayerScore").ToString();
+        levelText.text = "Level " + currentLevel.ToString();
 
         playerScore = PlayerPrefs.GetInt("PlayerScore");
 
         timerIsRunning = true;
 
         GameAnalytics.NewProgressionEvent(GAProgressionStatus.Start, "Level_" + currentLevel.ToString());
-
-        _APIManager.StartGame();
     }
 
     void Update()
@@ -137,9 +136,7 @@ public class GameController : MonoBehaviour
                 {
                     if (FirstBottle.numberOfColorsInBottle != 0)
                     {
-                        FirstBottle.transform.position = new Vector3(FirstBottle.transform.position.x,
-                                                                     FirstBottle.transform.position.y + bottleDown,
-                                                                     FirstBottle.transform.position.z);
+                        FirstBottle.transform.position = new Vector3(FirstBottle.transform.position.x, FirstBottle.transform.position.y + bottleDown, FirstBottle.transform.position.z);
                         FirstBottle = null;
                     }
                     if (SecondBottle != null)
@@ -189,7 +186,7 @@ public class GameController : MonoBehaviour
             {
                 GameOverCanvas.SetActive(true);
 
-                _APIManager.UpdateGameScore(0, "loss", currentLevel);
+                APIManager.Instance.UpdateGameScore(APIManager.Instance.ggScore, APIManager.Instance.ggCoins, "loss", currentLevel);
 
                 GameAnalytics.NewProgressionEvent(GAProgressionStatus.Fail, "Level_" + currentLevel.ToString(), "Score_", 0);
                 GameAnalytics.NewProgressionEvent(GAProgressionStatus.Fail, "Level_" + currentLevel.ToString(), "Time_", (int)timeElapsed);
@@ -212,20 +209,14 @@ public class GameController : MonoBehaviour
             numberOfUnlockedLevel = PlayerPrefs.GetInt("LevelIsUnlocked");
             completedLevel = PlayerPrefs.GetInt("CompletedLevels");
 
-            Debug.Log("Number of unlocked level : " + PlayerPrefs.GetInt("LevelIsUnlocked") + " (Before update)");
-            Debug.Log("Number of completed level : " + PlayerPrefs.GetInt("CompletedLevels") + " (Before update)");
-            Debug.Log("Current level : " + currentLevel);
-
             if ((numberOfUnlockedLevel + 1) <= 10)
             {
                 PlayerPrefs.SetInt("LevelIsUnlocked", numberOfUnlockedLevel + 1);
-                Debug.Log("Number of unlocked level : " + PlayerPrefs.GetInt("LevelIsUnlocked") + " (After update)");
             }
 
             if (currentLevel >= completedLevel + 1)
             {
                 PlayerPrefs.SetInt("CompletedLevels", completedLevel + 1);
-                Debug.Log("Number of completed level : " + PlayerPrefs.GetInt("CompletedLevels") + " (After update)");
             }
 
             if (currentLevel == 10)
@@ -235,45 +226,48 @@ public class GameController : MonoBehaviour
             else if (!LevelCompletedCanvas.activeInHierarchy)
             {
                 LevelCompletedCanvas.SetActive(true);
+                if (_GGTextObject.activeSelf)
+                {
+                    _GGTextObject.SetActive(false);
+                }
             }
 
             FindFirstObjectByType<AudioManager>().Play("WinSound");
 
+            if (currentLevel % GrandAdManager.instance.adsAfter == 0)
+            {
+                GrandAdManager.instance.ShowAd("startAd");
+            }
+
+
             if (completedLevel < 10)
             {
-
-                if (currentLevel % GrandAdManager.instance.adsAfter == 0)
-                {
-                    GrandAdManager.instance.ShowAd("startAd");
-                }
-
+                APIManager.Instance.coinsEarningLevelBased(currentLevel, _GGTextObject);
+                
                 if (timeUsed <= timeThresholds[0])
                 {
                     playerScore += score[2]; // Highest score for quickest completion
+                    APIManager.Instance.ggScore += score[2];
 
                     PlayerPrefs.SetInt("PlayerScore", playerScore);
 
                     scoreText.text = "Score : " + PlayerPrefs.GetInt("PlayerScore").ToString();
 
-                    _APIManager.coinsEarningLevelBased(currentLevel);
-
-                    _APIManager.UpdateGameScore(score[2], "win", currentLevel);
+                    APIManager.Instance.UpdateGameScore(APIManager.Instance.ggScore, APIManager.Instance.ggCoins, "win", currentLevel);
 
                     GameAnalytics.NewProgressionEvent(GAProgressionStatus.Complete, "Level_" + currentLevel.ToString(), "Score", score[2]);
                     GameAnalytics.NewProgressionEvent(GAProgressionStatus.Complete, "Level_" + currentLevel.ToString(), "Time", (int)timeElapsed);
-
                 }
                 else if (timeUsed <= timeThresholds[1])
                 {
                     playerScore += score[1]; // Mid score for medium speed completion
+                    APIManager.Instance.ggScore += score[1];
 
                     PlayerPrefs.SetInt("PlayerScore", playerScore);
 
                     scoreText.text = "Score : " + PlayerPrefs.GetInt("PlayerScore").ToString();
 
-                    _APIManager.coinsEarningLevelBased(currentLevel);
-
-                    _APIManager.UpdateGameScore(score[1], "win", currentLevel);
+                    APIManager.Instance.UpdateGameScore(APIManager.Instance.ggScore, APIManager.Instance.ggCoins, "win", currentLevel);
 
                     GameAnalytics.NewProgressionEvent(GAProgressionStatus.Complete, "Level_" + currentLevel.ToString(), "Score", score[1]);
                     GameAnalytics.NewProgressionEvent(GAProgressionStatus.Complete, "Level_" + currentLevel.ToString(), "Time", (int)timeElapsed);
@@ -281,14 +275,13 @@ public class GameController : MonoBehaviour
                 else
                 {
                     playerScore += score[0]; // Lowest score for slow completion
+                    APIManager.Instance.ggScore += score[0];
 
                     PlayerPrefs.SetInt("PlayerScore", playerScore);
 
                     scoreText.text = "Score : " + PlayerPrefs.GetInt("PlayerScore").ToString();
 
-                    _APIManager.coinsEarningLevelBased(currentLevel);
-
-                    _APIManager.UpdateGameScore(score[0], "win", currentLevel);
+                    APIManager.Instance.UpdateGameScore(APIManager.Instance.ggScore, APIManager.Instance.ggCoins, "win", currentLevel);
 
                     GameAnalytics.NewProgressionEvent(GAProgressionStatus.Complete, "Level_" + currentLevel.ToString(), "Score", score[0]);
                     GameAnalytics.NewProgressionEvent(GAProgressionStatus.Complete, "Level_" + currentLevel.ToString(), "Time", (int)timeElapsed);

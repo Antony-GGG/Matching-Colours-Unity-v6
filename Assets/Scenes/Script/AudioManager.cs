@@ -33,10 +33,24 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    private void Start()
+    void Start()
     {
-        FindFirstObjectByType<AudioManager>().Play("BG");
+        if (PlayerPrefs.GetInt("VolumeOn") == 1)
+        {
+            foreach (Sound sound in sounds)
+            {
+                sound.audioSource.mute = false;
+            }
+        }
+        else if (PlayerPrefs.GetInt("VolumeOn") == 0)
+        {
+            foreach (Sound sound in sounds)
+            {
+                sound.audioSource.mute = true;
+            }
+        }
 
+        FindFirstObjectByType<AudioManager>().Play("BG");
     }
 
     public void Play(String name)
